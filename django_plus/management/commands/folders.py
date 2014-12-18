@@ -62,7 +62,7 @@ class Command(TemplateCommand):
     def handle(self, msg=None, **options):
 		print "este es el nombre del proyecto %s" % PROJECT_NAME
 		carpetas = ["plantillas","apps","static","media"]
-		add_var_settings(BASE_DIR)
+		#add_var_settings(BASE_DIR)
 		for car in carpetas:
 			os.mkdir(car)
 			print "se ha creado la carpeta %s"% car

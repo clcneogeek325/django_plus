@@ -15,3 +15,16 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_plus',
 )
+
+
+ahora solo ve ala consola y 
+le agreamos premiosos de ejecucion
+a manage.py
+
+chmod +x manage.py
+
+
+y corremos el comando
+
+
+./manage.py folders
