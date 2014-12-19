@@ -35,13 +35,18 @@ def crear_archivo(path,archivo,text):
 
 def add_var_settings(path):
 	url = "%s/%s/settings.py"%(path,PROJECT_NAME)
-	f = open(url,'r')
-	texto = "%s"%f
-	print texto
-	f.close()
-	f = open(url,'w')
-	texto += vars_settings
-	f.write(texto)
+	f = open(url)
+	contenido = ""
+	try:
+	for line in f:
+		contenido += line.strip()+"\n"
+		f.close()
+	finally:
+		f.close()
+	contenido += vars_settings
+	print contenido
+	f = open(url,"w")
+	f.write(contenido)
 	f.close()
 
 
