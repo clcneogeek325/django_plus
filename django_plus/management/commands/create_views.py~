@@ -1,0 +1,70 @@
+from django.core.management.base import CommandError
+from django.core.management.templates import TemplateCommand
+import os
+from django.conf import settings
+from django_plus.files import add_texto_archivo
+from django.template import Template, Context
+
+
+
+
+BASE_DIR = settings.BASE_DIR
+PROJECT_NAME = os.path.basename(BASE_DIR)
+
+plantilla_views = """from .models import {{ modelo }}
+
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView
+from django.core.urlresolvers import reverse_lazy
+
+class {{modelo}}Create(CreateView):
+    model = {{ modelo }}
+    fields = {{ campos }}
+    success_url = reverse_lazy('{{modelo}}_lista')
+    
+class {{modelo}}Update(UpdateView):
+    model = {{ modelo }}
+    fields = {{ campos }}
+    success_url = reverse_lazy('{{ modelo }}_lista')
+
+class {{modelo}}Delete(DeleteView):
+    template_name_field = None
+    model = Distro
+    success_url = reverse_lazy('{{ modelo }}_lista')
+
+class {{modelo}}List(ListView):
+    model = {{ modelo }}
+    
+
+"""
+plantilla_urls = """from django.conf.urls import patterns, include, url
+from .views import {{modelo}}Create, {{modelo}}Update, {{modelo}}Delete,{{modelo}}List
+
+urlpatterns = patterns('',
+
+    url(r'^$', {{modelo}}List.as_view(), name='{{modelo}}_lista'),
+    url(r'{{modelo}}/add/$', {{modelo}}Create.as_view(), name='{{modelo}}_add'),
+    url(r'{{modelo}}/(?P<pk>\d+)/$', {{modelo}}Update.as_view(), name='{{modelo}}_update'),
+    url(r'{{modelo}}/(?P<pk>\d+)/delete/$', {{modelo}}Delete.as_view(), name='{{modelo}}_delete'),
+)
+
+"""
+
+class Command(TemplateCommand):
+	help = ("Crea las vistas y urls para las aplicaciones")
+	
+	def handle(self, modelo=None, **options):
+		if modelo is not None:
+			import apps
+			encontrado = False
+			for app in dir(apps):
+				if app == modelo:
+					encontrado = True
+			if encontrado:
+				url_apps = "%s/apps/%s"%(BASE_DIR,modelo)
+				print url_apps
+			else:
+				print "lo sentimo per tiene que registrar primero la aplicaion"
+		else:
+			print "los sentimos pero primero debe especificar un aplicacion"
+
